@@ -22,7 +22,8 @@ All values are displayed on a **16×2 LCD (I2C)** and can be used to control dev
 * Drashti
 * Khushboo
 * Nidhi
-* Vaishali Pal
+* Vaishali
+* Pal
 
 ---
 
