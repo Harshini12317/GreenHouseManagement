@@ -1,0 +1,22 @@
+// ACTION LOGIC (RL derived)
+
+if (soil >= 3000 && (temp > 30 || humidity < 50)) {
+    // extreme condition → both ON
+    digitalWrite(MIST, LOW);
+    digitalWrite(PUMP, LOW);
+}
+else if (soil >= 3000) {
+    // soil dry → pump ON
+    digitalWrite(PUMP, LOW);
+    digitalWrite(MIST, HIGH);
+}
+else if (humidity < 50 || temp > 30) {
+    // air dry or hot → mist ON
+    digitalWrite(MIST, LOW);
+    digitalWrite(PUMP, HIGH);
+}
+else {
+    // stable
+    digitalWrite(MIST, HIGH);
+    digitalWrite(PUMP, HIGH);
+}
