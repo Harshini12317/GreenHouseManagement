@@ -1,0 +1,63 @@
+# Data Flow Diagram
+
+System-wide data flow:
+
+## Real-time Data Pipeline
+```
+1. Physical World
+   ↓
+2. Sensors (DHT22, LDR)
+   ↓
+3. ESP32 Reading Module
+   ↓
+4. Serial Protocol (115200 baud)
+   ↓
+5. Python Serial Interface
+   ↓
+6. Sensor Data Router (broadcast)
+   ├→ Central Controller
+   ├→ RL Agents (Temperature & Humidity)
+   └→ Logging System
+   ↓
+7. Agent Decision Making
+   ├→ Temperature Agent (Q-Learning)
+   ├→ Humidity Agent (Q-Learning)
+   └→ Conflict Resolver
+   ↓
+8. Action Merger
+   ↓
+9. ESP32 Control Module
+   ↓
+10. Relay Drivers
+    ↓
+11. Actuators (Heater, Cooler, Fan, etc.)
+    ↓
+12. Physical World
+```
+
+## State Management Flow
+```
+Sensor Readings → Discretization → State Vector
+                                     ↓
+                              Q-Table Lookup
+                                     ↓
+                          Action Selection (argmax)
+                                     ↓
+                         Conflict Resolution Checks
+                                     ↓
+                            Command Execution
+```
+
+## Data Rates
+- Sensor reading interval: 5 seconds
+- Control loop interval: 10 seconds
+- Serial communication: 115200 bps
+- Display refresh: 2 seconds
+
+## Storage/Persistence
+- Q-tables: PKL files (pickle format)
+- Logs: Daily rotating log files
+- Training data: CSV export capability
+- Configuration: JSON format
+
+Image format: PNG, 1920x1440px - Flow chart style

@@ -1,0 +1,44 @@
+# System Architecture Diagram
+
+A comprehensive block diagram should show:
+
+## Main Components
+1. **ESP32 Microcontroller** (Central hub)
+   - Serial communication interface
+   - GPIO management
+   - Timer/interrupt handling
+
+2. **Sensor Subsystem**
+   - DHT22 (Temperature & Humidity) on GPIO 4
+   - LDR Light Sensor on GPIO 34 (analog)
+   - Data processing pipeline
+
+3. **Actuator Subsystem**
+   - Heater relay (GPIO 5)
+   - Cooler relay (GPIO 18)
+   - Fan relay (GPIO 19)
+   - Water pump relay (GPIO 21)
+   - Humidifier relay (GPIO 22)
+
+4. **Display**
+   - LCD 16x2 (4-bit parallel mode)
+   - Status indication
+
+5. **Control System**
+   - Central Controller (Python)
+   - Temperature RL Agent
+   - Humidity RL Agent
+   - Conflict Resolver
+
+## Data Flow
+- Sensors → ESP32 → Serial → Python Controller
+- Python Controller → RL Agents → Decisions
+- Decisions → Conflict Resolver → ESP32
+- ESP32 → Relay Control → Actuators
+
+## Power Distribution
+- 3.3V logic supply
+- 12V actuator supply
+- Ground plane
+
+Image format: PNG, 1920x1440px

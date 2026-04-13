@@ -1,0 +1,42 @@
+# Hardware Block Diagram
+
+Detailed hardware connections:
+
+## Sensor Connections
+```
+DHT22 → GPIO 4 (with 2.2kΩ pull-up)
+LDR → GPIO 34 (ADC) with voltage divider
+```
+
+## Actuator Connections
+```
+Heater     → GPIO 5  → Relay 1
+Cooler     → GPIO 18 → Relay 2
+Fan        → GPIO 19 → Relay 3
+Water Pump → GPIO 21 → Relay 4
+Humidifier → GPIO 22 → Relay 5
+```
+
+## Display Connections
+```
+LCD RS  → GPIO 12
+LCD EN  → GPIO 13
+LCD D4  → GPIO 14
+LCD D5  → GPIO 25
+LCD D6  → GPIO 26
+LCD D7  → GPIO 27
+```
+
+## Power Details
+- All relays: 12V supply with flyback diodes
+- Logic: 3.3V from ESP32 regulator
+- Fusing: 5A main, 1A per relay circuit
+- Current limiting resistors on GPIO inputs
+
+## Component Specifications
+- DHT22: Temp -40 to 125°C, Humidity 0-100%
+- LDR: 5kΩ (dark) to 50Ω (bright)
+- Relays: 10A @ 250V AC rated
+- LCD: Standard 16x2 character display
+
+Image format: PNG, 1920x1440px
