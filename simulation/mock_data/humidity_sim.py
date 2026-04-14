@@ -4,8 +4,8 @@ import random
 class HumiditySim:
     """Minimal humidity simulator used by training scripts."""
 
-    def __init__(self, initial_humidity=50.0):
-        self.humidity = float(initial_humidity)
+    def __init__(self):
+        self.humidity = random.randint(20, 90)
 
     def step(self, action):
         """Update humidity based on the chosen action.

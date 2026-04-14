@@ -1,23 +1,22 @@
-﻿import os
-import sys
-
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
-
-from simulation.mock_data.humidity_sim import HumiditySim
+﻿from simulation.mock_data.humidity_sim import HumiditySim
 from group2_humidity_agent.env.state_mapping import get_humidity_state, ACTIONS
 from group2_humidity_agent.env.reward import get_reward
-from group2_humidity_agent.model.q_learning_humidity import choose_action, update_q
+from group2_humidity_agent.model.q_learning_humidity import choose_action, update_q, Q
+
+import pickle
 
 
-def run_training(episodes=10):
-    env = HumiditySim(initial_humidity=55.0)
-    print('Starting humidity training...')
+def run_training(episodes=500):
+    env = HumiditySim()
 
-    for episode in range(1, episodes + 1):
+    print("Starting humidity training...")
+    print("Initial Q-table:")
+    print(Q)
+
+    for episode in range(episodes):
         humidity = env.humidity
         state = get_humidity_state(humidity)
+
         action = choose_action(state)
 
         new_humidity = env.step(action)
@@ -26,11 +25,19 @@ def run_training(episodes=10):
 
         update_q(state, action, reward, next_state)
 
-        print(
-            f'Episode {episode:02d}: humidity={humidity:.1f}% action={ACTIONS[action]} '
-            f'new={new_humidity:.1f}% reward={reward}'
-        )
+        # Print only some episodes
+        if episode % 50 == 0:
+            print(f"Episode {episode}: Humidity={new_humidity}, Action={ACTIONS[action]}, Reward={reward}")
+
+    # Save Q-table AFTER training
+    with open("q_table_humidity.pkl", "wb") as f:
+        pickle.dump(Q, f)
+
+    print("\nTraining complete!")
+    print("Final Q-table:")
+    print(Q)
+    print("Q-table saved successfully!")
 
 
 if __name__ == '__main__':
-    run_training(episodes=10)
+    run_training()
