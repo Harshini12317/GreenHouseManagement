@@ -80,59 +80,170 @@ The AI learned optimal greenhouse control from real plant data:
 
 ### 🔌 Circuit Connections
 
-#### 📟 LCD Display (I2C)
-| LCD Pin | ESP32    |
-| ------- | -------- |
-| VCC     | 5V (Vin) |
-| GND     | GND      |
-| SDA     | GPIO 21  |
-| SCL     | GPIO 22  |
+#### 1. ESP32 PIN SUMMARY
 
-#### 🌡️ DHT22 Sensor
-| DHT22 Pin | ESP32  |
-| --------- | ------ |
-| VCC       | 3.3V   |
-| DATA      | GPIO 4 |
-| GND       | GND    |
-*Add 10kΩ resistor between VCC and DATA*
+DHT22 DATA        → GPIO 4
+Soil Sensor AO    → GPIO 35 (Analog Input)
+LDR               → GPIO 34 (Analog Input)
 
-#### 🌱 Soil Moisture Sensor
-| Sensor Pin | ESP32   |
-| ---------- | ------- |
-| VCC        | 3.3V    |
-| GND        | GND     |
-| AO         | GPIO 35 |
+Relay IN1         → GPIO 18 (Pump Control)
+Relay IN2         → GPIO 19 (Mist Control)
 
-#### 🌫️ Mist Module (via Relay)
-| Relay Module | ESP32   | Mist Module |
-| ------------ | ------- | ----------- |
-| VCC          | 5V      | VCC         |
-| GND          | GND     | GND         |
-| IN           | GPIO 19 | -           |
-| COM          | -       | K1 Button  |
-| NO           | -       | K1 Button  |
+LCD SDA           → GPIO 21
+LCD SCL           → GPIO 22
 
-#### 🚰 Water Pump Motor
-| Water Pump | ESP32   |
-| ---------- | ------- |
-| VCC        | GPIO 18 |
-| GND        | GND     |
+---
 
-#### 🌞 LDR Sensor (Optional)
-| Component     | Connection              |
-| ------------- | ----------------------- |
-| LDR one leg   | 3.3V                    |
-| LDR other leg | GPIO 34                 |
-| 10kΩ resistor | Between GPIO 34 and GND |
+#### 2. POWER CONNECTIONS
 
-### ⚡ Power Management
+ESP32:
 
-**Important**: Separate power supplies for stability
-- **ESP32**: USB 5V (logic/control)
-- **Mist Module**: External 5V/2A supply
-- **Water Pump**: 5V-12V (depending on motor specs)
-- **Soil Sensor**: 3.3V from ESP32
-- **Shared GND**: All components
+* Powered via USB (5V)
+
+Sensors:
+
+* Powered using ESP32 3.3V
+
+Relay Module:
+
+* VCC → 5V (ESP32 Vin)
+* GND → GND
+
+Pump & Mist:
+
+* Powered using EXTERNAL BATTERY (5V–6V recommended)
+
+⚠️ IMPORTANT:
+ALL GROUNDS MUST BE COMMON
+
+Common Ground Connection:
+ESP32 GND = Relay GND = Battery Negative = Pump Negative = Mist Negative
+
+---
+
+#### 3. DHT22 (Temperature + Humidity Sensor)
+
+DHT22 VCC  → 3.3V
+DHT22 DATA → GPIO 4
+DHT22 GND  → GND
+
+Add 10kΩ resistor:
+
+* Between VCC and DATA
+
+---
+
+#### 4. SOIL MOISTURE SENSOR (YL-69)
+
+VCC → 3.3V
+GND → GND
+AO  → GPIO 35
+
+(Note: Use AO only, ignore DO)
+
+---
+
+#### 5. LDR (LIGHT SENSOR – VOLTAGE DIVIDER)
+
+LDR one leg → 3.3V
+LDR other   → GPIO 34
+
+10kΩ resistor:
+GPIO 34 → GND
+
+(This forms a voltage divider)
+
+---
+
+#### 6. LCD DISPLAY (16x2 with I2C)
+
+VCC → 5V (Vin)
+GND → GND
+SDA → GPIO 21
+SCL → GPIO 22
+
+---
+
+#### 7. RELAY MODULE (CONTROL SIDE)
+
+Relay VCC → 5V
+Relay GND → GND
+
+IN1 → GPIO 18  (Pump)
+IN2 → GPIO 19  (Mist)
+
+---
+
+#### 8. RELAY OUTPUT TERMINALS
+
+Each relay channel has:
+
+* COM (Common)
+* NO (Normally Open)
+* NC (Normally Closed)
+
+USE:
+COM + NO only
+
+---
+
+#### 9. WATER PUMP CONNECTION
+
+Battery Positive (+) → Relay COM (Channel 1)
+Relay NO             → Pump Positive (+)
+Pump Negative (−)    → Battery Negative (−)
+
+---
+
+#### 10. PUMP PROTECTION (VERY IMPORTANT)
+
+Use 1N4007 Diode across pump:
+
+Diode connection:
+
+* Stripe side → Pump Positive (+)
+* Other side  → Pump Negative (−)
+
+---
+
+#### 11. MIST MODULE CONNECTION
+
+Battery Positive (+) → Relay COM (Channel 2)
+Relay NO             → Mist Positive (+)
+Mist Negative (−)    → Battery Negative (−)
+
+---
+
+#### 12. FINAL SYSTEM FLOW
+
+Sensors → ESP32 → Relay Control → Pump / Mist
+
+ESP32 only sends signal
+Battery powers the devices
+
+---
+
+#### 13. TESTING CONTROL
+
+Pump:
+GPIO 18 HIGH → ON
+GPIO 18 LOW  → OFF
+
+Mist:
+GPIO 19 HIGH → ON
+GPIO 19 LOW  → OFF
+
+---
+
+#### 14. IMPORTANT SAFETY NOTES
+
+❌ Do NOT connect pump directly to ESP32
+❌ Do NOT power pump from ESP32
+❌ Do NOT skip common ground
+❌ Do NOT use NC pin
+
+✔ Always use external battery for pump/mist
+✔ Always use diode for pump protection
 
 ---
 
